@@ -4,9 +4,18 @@ import pg from "pg";
 import dotenv from "dotenv";
 
 dotenv.config();
+
+process.on("uncaughtException", (err) => {
+  console.error("UNCAUGHT EXCEPTION:", err);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.error("UNHANDLED REJECTION:", err);
+});
 const { Pool } = pg;
 
 const app = express();
+
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 
@@ -16,6 +25,10 @@ const pool = new Pool({
     rejectUnauthorized: false,
   },
 });
+
+pool.connect()
+  .then(() => console.log("✅ PostgreSQL Connected"))
+  .catch((err) => console.error("❌ PostgreSQL Error:", err));
 
 // Health check
 app.get("/api/health", (req, res) => {

@@ -162,6 +162,24 @@ app.post("/api/messages", async (req, res) => {
   }
 });
 
+app.post("/api/admin/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (
+    email === "admin@wec.com" &&
+    password === "admin123"
+  ) {
+    return res.json({
+      success: true,
+      token: "admin-token",
+    });
+  }
+
+  return res.status(401).json({
+    message: "Invalid credentials",
+  });
+});
+
 app.delete("/api/messages/:id", async (req, res) => {
   try {
     const { id } = req.params;

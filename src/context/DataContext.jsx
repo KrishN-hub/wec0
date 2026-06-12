@@ -9,7 +9,10 @@ import {
 } from "../data/initialData";
 
 const DataContext = createContext(null);
-const API_URL = "http://localhost:5000/api";
+//const API_URL = "http://localhost:5000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://wec0-production-fa98.up.railway.app/api";
 
 export function DataProvider({ children }) {
   const [services, setServices] = useState(initialServices);

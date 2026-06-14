@@ -163,21 +163,44 @@ app.post("/api/messages", async (req, res) => {
 });
 
 app.post("/api/admin/login", async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  if (
-    email === "admin@wec.com" &&
-    password === "admin123"
-  ) {
+    const result = await pool.query(
+      "SELECT * FROM admins WHERE email = $1",
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({
+        message: "Invalid credentials",
+      });
+    }
+
+    const admin = result.rows[0];
+
+    if (admin.password !== password) {
+      return res.status(401).json({
+        message: "Invalid credentials",
+      });
+    }
+
     return res.json({
       success: true,
       token: "admin-token",
+      admin: {
+        id: admin.id,
+        email: admin.email,
+        role: admin.role,
+      },
+    });
+  } catch (err) {
+    console.error("Admin Login Error:", err);
+
+    return res.status(500).json({
+      message: "Server Error",
     });
   }
-
-  return res.status(401).json({
-    message: "Invalid credentials",
-  });
 });
 
 app.delete("/api/messages/:id", async (req, res) => {

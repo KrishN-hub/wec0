@@ -22,17 +22,9 @@ export default function AdminLogin() {
         navigate("/admin/dashboard");
       }
     } catch (error) {
-      // Fallback or demo mode: check hardcoded fallback if API fails
-      if (email === "admin@wec.com" && password === "admin123") {
-        localStorage.setItem("adminToken", "demo-token");
-        toast.success("Login Successful (Demo Mode)");
-        navigate("/admin/dashboard");
-      } else {
         toast.error(error?.response?.data?.message || "Invalid credentials");
       }
-    } finally {
-      setLoading(false);
-    }
+    
   };
 
   return (
